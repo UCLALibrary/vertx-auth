@@ -30,9 +30,24 @@ public class LdapAuthenticationOptionsConverter {
             obj.setAuthenticationQuery((String)member.getValue());
           }
           break;
+        case "filterQuery":
+          if (member.getValue() instanceof String) {
+            obj.setFilterQuery((String)member.getValue());
+          }
+          break;
         case "referral":
           if (member.getValue() instanceof String) {
             obj.setReferral((String)member.getValue());
+          }
+          break;
+        case "returningAttributes":
+          if (member.getValue() instanceof JsonArray) {
+            java.util.ArrayList<java.lang.String> list =  new java.util.ArrayList<>();
+            ((Iterable<Object>)member.getValue()).forEach( item -> {
+              if (item instanceof String)
+                list.add((String)item);
+            });
+            obj.setReturningAttributes(list);
           }
           break;
         case "url":
@@ -55,8 +70,16 @@ public class LdapAuthenticationOptionsConverter {
     if (obj.getAuthenticationQuery() != null) {
       json.put("authenticationQuery", obj.getAuthenticationQuery());
     }
+    if (obj.getFilterQuery() != null) {
+      json.put("filterQuery", obj.getFilterQuery());
+    }
     if (obj.getReferral() != null) {
       json.put("referral", obj.getReferral());
+    }
+    if (obj.getReturningAttributes() != null) {
+      JsonArray array = new JsonArray();
+      obj.getReturningAttributes().forEach(item -> array.add(item));
+      json.put("returningAttributes", array);
     }
     if (obj.getUrl() != null) {
       json.put("url", obj.getUrl());
