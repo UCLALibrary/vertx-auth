@@ -27,6 +27,8 @@ import javax.naming.ldap.LdapContext;
 
 import io.vertx.core.*;
 import io.vertx.core.impl.VertxInternal;
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.User;
@@ -41,6 +43,9 @@ import io.vertx.ext.auth.ldap.LdapAuthenticationOptions;
  * @author <a href="mail://stephane.bastian.dev@gmail.com">Stephane Bastian</a>
  */
 public class LdapAuthenticationImpl implements LdapAuthentication {
+
+  private static final Logger LOG = LoggerFactory.getLogger(LdapAuthenticationImpl.class);
+
   private static final String SIMPLE_AUTHENTICATION_MECHANISM = "simple";
   private static final String FOLLOW_REFERRAL = "follow";
 
@@ -148,6 +153,10 @@ public class LdapAuthenticationImpl implements LdapAuthentication {
               } else if (attributeCount == 1) {
                 metadata.put(id, attribute.get(0));
               }
+            }
+
+            if (searchResults.hasMore()) {
+              LOG.warn("LDAP user filter returns more than one user");
             }
           }
 
